@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="486.0" prefWidth="729.0" style="-fx-border-color: #c54766;" styleClass="root" stylesheets="@../CssStyle/LoginStyle.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.DashboardformController">
+    <children>
+        <Label alignment="CENTER" layoutX="-2.0" opacity="0.73" prefHeight="248.0" prefWidth="730.0" text="E &amp; E service center">
+            <font>
+                <Font name="Cambria Bold" size="79.0" />
+            </font>
+        </Label>
+        <Label fx:id="lblTime" alignment="CENTER" layoutX="640.0" layoutY="6.0" opacity="0.73" prefHeight="17.0" prefWidth="88.0" text="HH:mm:ss" textAlignment="CENTER">
+            <font>
+                <Font name="System Bold" size="18.0" />
+            </font>
+        </Label>
+        <Button cache="true" layoutX="26.0" layoutY="243.0" mnemonicParsing="false" onAction="#userButtonOnAction" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #c1acb1; -fx-border-color: #c19ea7;" text="USER" textAlignment="CENTER">
+            <font>
+                <Font name="System Bold" size="15.0" />
+            </font>
+        </Button>
+        <Button alignment="CENTER" layoutX="195.0" layoutY="243.0" mnemonicParsing="false" onAction="#itemButtonOnAction" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #c1acb1; -fx-border-color: #c19ea7;" text="ITEM" textAlignment="CENTER">
+            <font>
+                <Font name="System Bold" size="15.0" />
+            </font>
+        </Button>
+        <Label alignment="CENTER" layoutX="-8.0" layoutY="464.0" opacity="0.43" prefHeight="27.0" prefWidth="719.0" text="OWNER   Ms. Sawanmi Fonseka,Panadura" />
+      <Label layoutX="8.0" layoutY="467.0" text="Contact- +94 123 456 789 " textFill="#a40800">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <Label layoutX="500.0" layoutY="467.0" text="Email - eneservice@sample.com " textFill="#a40800">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <Button alignment="CENTER" layoutX="434.0" layoutY="243.0" mnemonicParsing="false" onAction="#orderButtonOnAction" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #c1acb1; -fx-border-color: #c19ea7;" text="ORDER" textAlignment="CENTER">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Button>
+      <Button alignment="CENTER" layoutX="611.0" layoutY="243.0" mnemonicParsing="false" onAction="#reportsButtonOnAction" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #c1acb1; -fx-border-color: #c19ea7;" text="REPORTS" textAlignment="CENTER">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Button>
+      <Button cache="true" layoutX="316.0" layoutY="174.0" mnemonicParsing="false" onAction="#adminButtonOnAction" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #c1acb1; -fx-border-color: #c19ea7;" text="ADMIN" textAlignment="CENTER">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Button>
+    </children>
+</AnchorPane>
