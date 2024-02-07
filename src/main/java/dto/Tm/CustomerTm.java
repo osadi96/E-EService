@@ -1,31 +1,29 @@
 package dto.Tm;
 
-import javafx.scene.control.Button;
-
 public class CustomerTm {
-    private String id;
     private String name;
     private String emailaddress;
     private String address;
-    private Button btn;
+    private String orderid;
+
+    public CustomerTm(String name, String emailaddress, String address, String orderid) {
+        this.name = name;
+        this.emailaddress = emailaddress;
+        this.address = address;
+        this.orderid = orderid;
+    }
 
     public CustomerTm() {
     }
 
-    public CustomerTm(String id, String name, String emailaddress,String address, Button btn) {
-        this.id = id;
-        this.name = name;
-        this.emailaddress = emailaddress;
-        this.address = address;
-        this.btn = btn;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "name='" + name + '\'' +
+                ", emailaddress='" + emailaddress + '\'' +
+                ", address='" + address + '\'' +
+                ", orderid=" + orderid +
+                '}';
     }
 
     public String getName() {
@@ -35,6 +33,7 @@ public class CustomerTm {
     public void setName(String name) {
         this.name = name;
     }
+
 
     public String getEmailaddress() {
         return emailaddress;
@@ -47,27 +46,15 @@ public class CustomerTm {
     public String getAddress() {
         return address;
     }
-
     public void setAddress(String address) {
         this.address = address;
     }
 
-    public Button getBtn() {
-        return btn;
+    public String getOrderid() {
+        return orderid;
     }
-
-    public void setBtn(Button btn) {
-        this.btn = btn;
-    }
-
-    @Override
-    public String toString() {
-        return "CustomerTm{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", emailaddress='" + emailaddress + '\'' +
-                ", address=" + address +
-                ", btn=" + btn +
-                '}';
+    public void setOrderid(String orderid) {
+        this.orderid = orderid;
     }
 }
+

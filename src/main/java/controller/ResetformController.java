@@ -1,24 +1,28 @@
 package controller;
 
 import com.jfoenix.controls.JFXTextField;
+import dto.Tm.ResetTm;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import dto.Tm.UserTm;
+import javafx.stage.Stage;
+import java.io.IOException;
 import java.util.Map;
-
 
 public class ResetformController {
 
     public JFXTextField txtOTP;
     public JFXTextField txtEmail;
 
-    private Map<String, UserTm> userDatabase;
+    private Map<String, ResetTm> userDatabase;
     private Map<String, String> otpDatabase;
 
 
     public void sendotpButtonOnAction(ActionEvent event) {
         String enteredEmail = txtEmail.getText();
-        UserTm userTm = userDatabase.get(enteredEmail);
+        ResetTm userTm = userDatabase.get(enteredEmail);
 
         if (userTm != null) {
             String otp = generateOtp();
@@ -40,13 +44,13 @@ public class ResetformController {
         String enteredEmail = txtEmail.getText();
         String enteredOtp = getEnteredOtp();
 
-        if (otpDatabase.containsKey(enteredEmail) && otpDatabase.get(enteredEmail).equals(enteredOtp)) {
+        if (otpDatabase.containsKey(enteredEmail) && otpDatabase.get(enteredOtp).equals(enteredOtp)) {
             String newPassword = generetenewpassword();
-            System.out.println("New Password for " + enteredEmail + ": " + newPassword);
+            System.out.println("New Password for:"+ newPassword);
 
-            userDatabase.get(enteredEmail).setPassword(newPassword);
+            userDatabase.get(enteredEmail).setEmail(newPassword);
 
-            new Alert(Alert.AlertType.INFORMATION, "Password reset successful.").show();
+            new Alert(Alert.AlertType.INFORMATION, "Password reset successful!").show();
         } else {
             new Alert(Alert.AlertType.ERROR, "Invalid OTP.").show();
         }
@@ -62,5 +66,17 @@ public class ResetformController {
 
     private String txtOTP() {
         return null;
+    }
+
+    public void backButtonOnAction(ActionEvent event) {
+        Node source = (Node) event.getSource();
+        Stage stage = (Stage) source.getScene().getWindow();
+        try {
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/Employee.fxml"))));
+            stage.centerOnScreen();
+            stage.show();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

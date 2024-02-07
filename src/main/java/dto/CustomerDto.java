@@ -1,16 +1,16 @@
 package dto;
 
 public class CustomerDto {
-    private String id;
     private String name;
     private String emailaddress;
     private String address;
+    private String orderid;
 
-    public CustomerDto(String id, String name, String emailaddress, String address) {
-        this.id = id;
+    public CustomerDto(String name, String emailaddress, String address, String orderid) {
         this.name = name;
         this.emailaddress = emailaddress;
         this.address = address;
+        this.orderid = orderid;
     }
 
     public CustomerDto() {
@@ -19,19 +19,11 @@ public class CustomerDto {
     @Override
     public String toString() {
         return "Customer{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", emailaddress='" + emailaddress + '\'' +
-                ", address=" + address +
+                ", address='" + address + '\'' +
+                ", orderid=" + orderid +
                 '}';
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -41,6 +33,7 @@ public class CustomerDto {
     public void setName(String name) {
         this.name = name;
     }
+
 
     public String getEmailaddress() {
         return emailaddress;
@@ -53,8 +46,15 @@ public class CustomerDto {
     public String getAddress() {
         return address;
     }
-
     public void setAddress(String address) {
         this.address = address;
     }
+
+    public String getOrderid() {
+        return orderid;
+    }
+    public void setOrderid(String orderid) {
+        this.orderid = orderid;
+    }
 }
+

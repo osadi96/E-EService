@@ -1,16 +1,19 @@
 package dto;
 
 import lombok.*;
-
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
 @Getter
+@Setter
 @ToString
 public class OrderDto {
     private String orderId;
-    private String custId;
+    private String date;
+    private String name;
+    private String emailaddresss;
+    private String address;
+    private String contactnumber;
     private List<OrderDetailsDto> list;
 }

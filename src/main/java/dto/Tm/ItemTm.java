@@ -6,9 +6,10 @@ import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Getter
 @Setter
+@ToString
+
 public class ItemTm extends RecursiveTreeObject<ItemTm> {
     private String code;
     private String category;
@@ -17,11 +18,4 @@ public class ItemTm extends RecursiveTreeObject<ItemTm> {
     private int qty;
     private JFXButton btn;
 
-    public ItemTm(String code, String category, String desc, double unitPrice, int qty) {
-        this.code = code;
-        this.category = category;
-        this.desc = desc;
-        this.unitPrice = unitPrice;
-        this.qty = qty;
-    }
 }

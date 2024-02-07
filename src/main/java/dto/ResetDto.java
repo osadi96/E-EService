@@ -1,0 +1,33 @@
+package dto;
+
+public class ResetDto {
+    private String otp;
+    private String email;
+
+    public ResetDto(String otp, String email) {
+        this.otp = otp;
+        this.email = email;
+    }
+
+    public String toString() {
+        return "Employee{" +
+                "email='" + email + '\'' +
+                " otp='" + otp +
+                '}';
+    }
+
+    public String getOtp() {
+        return otp;
+    }
+    public void setOtp(String otp) {
+        this.otp = otp;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+}

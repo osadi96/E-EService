@@ -5,21 +5,19 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
 
 public class DashboardformController {
     public Label lblTime;
-
     public AnchorPane pane;
 
     public void initialize() {
@@ -36,29 +34,14 @@ public class DashboardformController {
         timeline.play();
     }
 
-
-    public void adminButtonOnAction(ActionEvent event) {
-        Stage stage = (Stage) pane.getScene().getWindow();
+    public void StoreButtonOnAction(ActionEvent event) {
+        Node source = (Node) event.getSource();
+        Stage stage = (Stage) source.getScene().getWindow();
         try {
-            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/View/Adminform.fxml"))));
-            stage.setTitle("ADMIN DASHBOARD");
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/View/Storeform.fxml"))));
+            stage.setTitle("SYSTEM MANAGMENT");
             Image image = new Image(getClass().getResourceAsStream("/Img/img1.png"));
             stage.getIcons().add(image);
-            stage.setResizable(false);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void userButtonOnAction(ActionEvent event) {
-        Stage stage = (Stage) pane.getScene().getWindow();
-        try {
-            stage.setScene(new Scene(FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/View/Userform.fxml")))));
-            stage.setTitle("LOGIN");
-            Image image = new Image(getClass().getResourceAsStream("/Img/img1.png"));
-            stage.getIcons().add(image);
-            stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -66,13 +49,13 @@ public class DashboardformController {
     }
 
     public void itemButtonOnAction(ActionEvent event) {
-        Stage stage = (Stage) pane.getScene().getWindow();
+        Node source = (Node) event.getSource();
+        Stage stage = (Stage) source.getScene().getWindow();
         try {
-            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("View/Itemform.fxml"))));
-            stage.setTitle("ITEM DASHBOARD");
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/View/Itemform.fxml"))));
+            stage.setTitle("ITEM MANAGMENT");
             Image image = new Image(getClass().getResourceAsStream("/Img/img1.png"));
             stage.getIcons().add(image);
-            stage.setResizable(true);
             stage.show();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -80,13 +63,13 @@ public class DashboardformController {
     }
 
     public void orderButtonOnAction(ActionEvent event) {
-        Stage stage = (Stage) pane.getScene().getWindow();
+        Node source = (Node) event.getSource();
+        Stage stage = (Stage) source.getScene().getWindow();
         try {
-            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("View/Itemform.fxml"))));
-            stage.setTitle("ITEM DASHBOARD");
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/View/Orderform.fxml"))));
+            stage.setTitle("ORDER MANAGMENT");
             Image image = new Image(getClass().getResourceAsStream("/Img/img1.png"));
             stage.getIcons().add(image);
-            stage.setResizable(true);
             stage.show();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -95,4 +78,5 @@ public class DashboardformController {
 
     public void reportsButtonOnAction(ActionEvent event) {
     }
+
 }

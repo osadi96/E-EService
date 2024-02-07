@@ -4,9 +4,10 @@ import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
-@Getter
 @Setter
+@Getter
+@ToString
+
 public class ItemDto {
     private String code;
     private String category;

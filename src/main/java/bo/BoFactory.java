@@ -1,7 +1,8 @@
 package bo;
 
+import bo.custom.CustomerBo;
 import bo.custom.impl.CustomerBoImpl;
-import dao.util.Botype;
+import dao.Util.BoTyppe;
 
 public class BoFactory {
     private static BoFactory boFactory;
@@ -12,10 +13,12 @@ public class BoFactory {
         return boFactory!=null? boFactory:(boFactory=new BoFactory());
     }
 
-    public <T extends SuperBo>T getBo(Botype type){
+    public <T extends SuperBo>T getBo(BoTyppe type){
         switch (type){
-            case Customer: return (T) new CustomerBoImpl();
+            case CUSTOMER: return (T) new CustomerBoImpl();
+
         }
         return null;
     }
+
 }

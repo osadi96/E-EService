@@ -1,41 +1,40 @@
 package controller;
 
+import bo.custom.CustomerBo;
+import bo.custom.OrderBo;
+import bo.custom.impl.CustomerBoImpl;
+import bo.custom.impl.OrderBoImpl;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import dao.custom.ItemDao;
+import dao.custom.impl.ItemDaoImpl;
 import dto.CustomerDto;
 import dto.ItemDto;
 import dto.OrderDetailsDto;
 import dto.OrderDto;
+import dto.Tm.OrderTm;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import dao.custom.CustomerDao;
-import dao.custom.ItemDao;
-import dao.custom.OrderDao;
-import dao.custom.impl.CustomerDaoImpl;
-import dao.custom.impl.ItemDaoImpl;
-import dao.custom.impl.OrderDaoImpl;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class OrderformController {
-
     @FXML
     private Label lblOrderId;
 
@@ -46,13 +45,13 @@ public class OrderformController {
     private TextField txtCustEmail;
 
     @FXML
+    private TextField txtCustAddress;
+
+    @FXML
     private TextField txtCustNumber;
 
     @FXML
-    private JFXComboBox cmbCustId;
-
-    @FXML
-    private JFXComboBox cmbItemCode;
+    private JFXComboBox<?> cmbItemCode;
 
     @FXML
     private TextField txtDesc;
@@ -64,7 +63,7 @@ public class OrderformController {
     private TextField txtQty;
 
     @FXML
-    private JFXComboBox cmbItemCata;
+    private JFXComboBox<?> cmbItemCata;
 
     @FXML
     private TextField txtUnitPrice;
@@ -73,7 +72,7 @@ public class OrderformController {
     private Label lblTotal;
 
     @FXML
-    private JFXTreeTableView <dto.tm.OrderTm> tblOrder;
+    private JFXTreeTableView<OrderTm> tblOrder;
 
     @FXML
     private TreeTableColumn colCode;
@@ -90,17 +89,15 @@ public class OrderformController {
     @FXML
     private TreeTableColumn colOption;
 
+    private CustomerBo customerBo = new CustomerBoImpl();
+    private OrderBo orderBo= (OrderBo) new OrderBoImpl();
+    private ItemDao itemDao = new ItemDaoImpl();
     private List<CustomerDto> customers;
     private List<ItemDto> items;
+    private double total=0;
 
-    private AnchorPane pane;
-    private double tot = 0;
+    private ObservableList<OrderTm> tmList = FXCollections.observableArrayList();
 
-    private CustomerDao customerDao = new CustomerDaoImpl();
-    private ItemDao itemDao = new ItemDaoImpl();
-    private OrderDao orderDao = new OrderDaoImpl();
-
-    private ObservableList<dto.tm.OrderTm> tmList = FXCollections.observableArrayList();
 
     public void initialize(){
         colCode.setCellValueFactory(new TreeItemPropertyValueFactory<>("code"));
@@ -109,186 +106,153 @@ public class OrderformController {
         colAmount.setCellValueFactory(new TreeItemPropertyValueFactory<>("amount"));
         colOption.setCellValueFactory(new TreeItemPropertyValueFactory<>("btn"));
 
-        generateId();
-        loadCustomerIds();
+        try {
+            customers = customerBo.allCustomers();
+            items = itemDao.allItems();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
         loadItemCodes();
-        calculateDate();
+        loadItemCategory();
 
-
-        cmbCustId.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, id) -> {
-            for (CustomerDto dto:customers) {
-                if (dto.getId().equals(id)){
-                    txtCustName.setText(dto.getName());
-                }
-            }
-        });
-
-
-        cmbItemCode.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, code) -> {
+        cmbItemCode.getSelectionModel().selectedItemProperty().addListener((observableValue, o, newValue) -> {
             for (ItemDto dto:items) {
-                if (dto.getCode().equals(code)){
+                if (dto.getCode().equals(newValue.toString())){
                     txtDesc.setText(dto.getDesc());
                     txtUnitPrice.setText(String.format("%.2f",dto.getUnitPrice()));
                 }
             }
         });
+
+        cmbItemCata.getSelectionModel().selectedItemProperty().addListener((observableValue, o, newValue) -> {
+            for (ItemDto dto:items) {
+                if (dto.getCategory().equals(newValue.toString())){
+                    txtDesc.setText(dto.getDesc());
+                    txtUnitPrice.setText(String.format("%.2f",dto.getUnitPrice()));
+                }
+            }
+        });
+
+        setOrderId();
+    }
+
+    private void loadItemCategory() {
+        ObservableList list = FXCollections.observableArrayList();
+        for (ItemDto dto:items) {
+            list.add(dto.getCategory());
+        }
+        cmbItemCata.setItems(list);
+    }
+
+    private void setOrderId() {
+        try {
+            lblOrderId.setText(orderBo.generateId());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void loadItemCodes() {
-        try {
-            items = itemDao.allItems();
-            ObservableList list = FXCollections.observableArrayList();
-            for (ItemDto dto:items) {
-                list.add(dto.getCode());
-            }
-            cmbItemCode.setItems(list);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        ObservableList list = FXCollections.observableArrayList();
+        for (ItemDto dto:items) {
+            list.add(dto.getCode());
         }
+        cmbItemCode.setItems(list);
     }
 
-    private void loadCustomerIds() {
-        try {
-            customers = customerDao.allCustomers();
-            ObservableList list = FXCollections.observableArrayList();
-            for (CustomerDto dto:customers) {
-                list.add(dto.getId());
+    @FXML
+    void addToCartButtonOnAction(ActionEvent event) {
+        JFXButton btn = new JFXButton("Delete");
+
+        OrderTm tm = new OrderTm(
+                cmbItemCode.getValue().toString(),
+                txtDesc.getText(),
+                Integer.parseInt(txtQty.getText()),
+                Double.parseDouble(txtUnitPrice.getText())*Integer.parseInt(txtQty.getText()),
+                btn
+        );
+        btn.setOnAction(actionEvent -> {
+            tmList.remove(tm);
+            total-=tm.getAmount();
+            lblTotal.setText(String.format("%.2f",total));
+            tblOrder.refresh();
+        });
+
+        boolean isExist = false;
+        for (OrderTm order:tmList) {
+            if (order.getCode().equals(tm.getCode())){
+                order.setQty(order.getQty()+tm.getQty());
+                order.setAmount(order.getAmount()+tm.getAmount());
+                isExist = true;
+                total+= tm.getAmount();
             }
-            cmbCustId.setItems(list);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
+        if (!isExist){
+            tmList.add(tm);
+            total+=tm.getAmount();
+        }
+
+        lblTotal.setText(String.format("%.2f",total));
+
+        TreeItem treeItem = new RecursiveTreeItem<>(tmList, RecursiveTreeObject::getChildren);
+        tblOrder.setRoot(treeItem);
+        tblOrder.setShowRoot(false);
     }
 
-    public void addToCartButtonOnAction(ActionEvent event) {
-        try {
-            double amount = itemDao.getItem(cmbItemCode.getValue().toString()).getUnitPrice() * Integer.parseInt(txtQty.getText());
-            JFXButton btn = new JFXButton("Delete");
+    @FXML
+    void placeOrderButtonOnAction(ActionEvent event) {
+//        List<OrderDetailsDto> list = new ArrayList<>();
+//        for (OrderTm tm:tmList) {
+//            list.add(new OrderDetailsDto(
+//                    lblOrderId.getText(),
+//                    tm.getCode(),
+//                    tm.getQty(),
+//                    tm.getAmount()/tm.getQty()
+//            ));
+//        }
+
+//        OrderDto dto = new OrderDto(
+//                lblOrderId.getText(),
+//                LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd")),
+//                cmbItemCode,
+//                list
+//        );
 
 
-            dto.tm.OrderTm tm = new dto.tm.OrderTm(
-                    cmbItemCode.getValue().toString(),
-                    txtDesc.getText(),
-                    Integer.parseInt(txtQty.getText()),
-                    amount,
-                    btn
-            );
+//        try {
+//            OrderDto dto;
+//            boolean isSaved = orderBo.saveOrder(dto);
+//            if (isSaved){
+//                new Alert(Alert.AlertType.INFORMATION, "Order Saved!").show();
+//                setOrderId();
+//            }else{
+//                new Alert(Alert.AlertType.ERROR, "Order Not Saved!").show();
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        } catch (ClassNotFoundException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+    }
 
-            btn.setOnAction(actionEvent1 -> {
-                tmList.remove(tm);
-                tot -= tm.getAmount();
-                tblOrder.refresh();
-                lblTotal.setText(String.format("%.2f",tot));
-            });
-
-            boolean isExist = false;
-
-            for (dto.tm.OrderTm order:tmList) {
-                if (order.getCode().equals(tm.getCode())){
-                    order.setQty(order.getQty()+tm.getQty());
-                    order.setAmount(order.getAmount()+tm.getAmount());
-                    isExist = true;
-                    tot+=tm.getAmount();
-                }
-            }
-
-            if (!isExist){
-                tmList.add(tm);
-                tot+= tm.getAmount();
-            }
-
-            TreeItem<dto.tm.OrderTm> treeObject = new RecursiveTreeItem<dto.tm.OrderTm>(tmList, RecursiveTreeObject::getChildren);
-            tblOrder.setRoot(treeObject);
-            tblOrder.setShowRoot(false);
-
-            lblTotal.setText(String.format("%.2f",tot));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+    public void savecustomerOnAction(ActionEvent event) {
 
     }
 
-    public void generateId(){
+    @FXML
+    void backbuttonOnAction(ActionEvent event) {
+        Node source = (Node) event.getSource();
+        Stage stage = (Stage) source.getScene().getWindow();
         try {
-            OrderDto dto = orderDao.lastOrder();
-            if (dto!=null){
-                String id = dto.getOrderId();
-                int num = Integer.parseInt(id.split("[D]")[1]);
-                num++;
-                lblOrderId.setText(String.format("D%03d",num));
-            }else{
-                lblOrderId.setText("D001");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void placeOrderButtonOnAction(ActionEvent event) {
-        List<OrderDetailsDto> list = new ArrayList<>();
-        for (dto.tm.OrderTm tm:tmList) {
-            list.add(new OrderDetailsDto(
-                    lblOrderId.getText(),
-                    tm.getCode(),
-                    tm.getQty(),
-                    tm.getAmount()/tm.getQty()
-            ));
-        }
-
-
-        boolean isSaved = false;
-
-
-        try {
-            String formattedDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
-
-            isSaved = orderDao.saveOrder(new OrderDto(
-                    lblOrderId.getText(),
-                    cmbCustId.getValue().toString(),
-                    list
-            ));
-            if (isSaved){
-                new Alert(Alert.AlertType.INFORMATION,"Order Saved!").show();
-            }else{
-                new Alert(Alert.AlertType.ERROR,"Something went wrong!").show();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void backbuttonOnAction(ActionEvent event) {
-        Stage stage = (Stage) pane.getScene().getWindow();
-        try {
-            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("View/Dashboardform.fxml"))));
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/Dashboard.fxml"))));
+            stage.centerOnScreen();
             stage.show();
         } catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("An error occurred while navigating back.");
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
-
-    private void calculateDate(){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy");
-        LocalDate currentDate = LocalDate.now();
-
-        String formattedDate = currentDate.format(formatter);
-        lblDate.setText("Current Date: " + formattedDate);
-    }
-
 }
